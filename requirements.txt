@@ -1,0 +1,7 @@
+Flask==2.3.3
+requests==2.31.0
+numpy==1.23.5
+opencv-python==4.8.0.76
+torch==2.0.1
+segment-anything==1.0.0  # Adjust version to match the one you're using
+shapely==2.0.1

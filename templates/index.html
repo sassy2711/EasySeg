@@ -1,0 +1,49 @@
+<!-- 
+<form method="POST">
+    <label for="bbox">Bounding Box (BBOX for WMS):</label><br>
+    <input type="text" id="bbox" name="bbox" placeholder="-180,-90,180,90" required><br><br>
+
+    <label for="layer">Layer:</label><br>
+    <input type="text" id="layer" name="layer" placeholder="Enter layer name" required><br><br>
+
+    <label for="input_box">Bounding Box for SAM (x1,y1,x2,y2):</label><br>
+    <input type="text" id="input_box" name="input_box" placeholder="e.g., 180,209,290,340"><br><br>
+
+    <button type="submit">Fetch & Process Image</button>
+</form>
+
+{% if image %}
+<h2>Fetched WMS Image:</h2>
+<img src="{{ image }}" alt="WMS Map"><br>
+{% if masked_region %}
+<h2>Masked Region Output:</h2>
+<img src="{{ masked_region }}" alt="Masked Region"><br>
+{% endif %}
+<a href="/download">Download Original Image</a>
+{% endif %}
+ -->
+ <form method="POST">
+    <label for="bbox">Bounding Box (BBOX for WMS):</label><br>
+    <input type="text" id="bbox" name="bbox" placeholder="-180,-90,180,90" required><br><br>
+
+    <label for="layer">Layer:</label><br>
+    <input type="text" id="layer" name="layer" placeholder="Enter layer name" required><br><br>
+
+    <label for="input_box">Bounding Box for SAM (x1,y1,x2,y2):</label><br>
+    <input type="text" id="input_box" name="input_box" placeholder="e.g., 180,209,290,340"><br><br>
+
+    <button type="submit">Fetch & Process Image</button>
+</form>
+
+{% if image %}
+<h2>Fetched WMS Image:</h2>
+<img src="{{ image }}" alt="WMS Map"><br>
+{% if masked_region %}
+<h2>Masked Region Output:</h2>
+<img src="{{ masked_region }}" alt="Masked Region"><br>
+{% endif %}
+<a href="/download">Download Original Image</a><br>
+{% if geojson_file %}
+<a href="/download_geojson">Download GeoJSON</a>
+{% endif %}
+{% endif %}
