@@ -1,11 +1,11 @@
-# EasySeg: Interactive Segmentation on WMS Imagery
+# EasySeg: Interactive Segmentation on WMS Imagery with React & Flask
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
+[![React](https://img.shields.io/badge/React-18-blue.svg)](https://reactjs.org/)
 [![Flask](https://img.shields.io/badge/Flask-2.2-green.svg)](https://flask.palletsprojects.com/)
-[![React](https://img.shields.io/badge/Frontend-HTML/JS-orange.svg)](#)
+[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-EasySeg is a proof-of-concept web application that enables interactive semantic segmentation on geospatial imagery loaded from a Web Map Service (WMS). It leverages the power of Meta AI's Segment Anything Model (SAM) and performs all heavy computation on the user's own device, ensuring data privacy and utilizing modern hardware capabilities like GPUs/NPUs.
+EasySeg is a web application that enables interactive semantic segmentation on geospatial imagery loaded from a Web Map Service (WMS). It leverages the power of Meta AI's Segment Anything Model (SAM) and performs all heavy computation on the user's own device, ensuring data privacy and utilizing modern hardware capabilities like GPUs/NPUs.
 
 ## About The Project
 
@@ -23,7 +23,7 @@ EasySeg bridges this gap by providing a seamless workflow from data ingestion to
 ### Tech Stack
 
 -   **Backend:** Flask (Python)
--   **Frontend:** Plain HTML, CSS, JavaScript (using a mapping library like OpenLayers or Leaflet to handle WMS)
+-   **Frontend:** React
 -   **AI Model:** [Segment Anything Model (SAM)](https://github.com/facebookresearch/segment-anything) by Meta AI
 -   **Geospatial Processing:** GDAL, Rasterio, Shapely
 -   **WMS Service Example:** [Bhuvan ISRO Portal](https://bhuvan-vec2.nrsc.gov.in/bhuvan/wms)
@@ -37,10 +37,13 @@ Follow these instructions to get a local copy of EasySeg up and running on your 
 You will need the following software installed on your system:
 -   [Python](https://www.python.org/downloads/) (version 3.9 or higher)
 -   [Pip](https://pip.pypa.io/en/stable/installation/) (Python package installer)
+-   [Node.js](https://nodejs.org/) (version 16 or higher, which includes `npm`)
 -   [Git](https://git-scm.com/downloads/) (for cloning the repository)
--   It is **highly recommended** to use a virtual environment to manage dependencies.
+-   It is **highly recommended** to use a Python virtual environment.
 
 ### Installation
+
+The project is structured into a `frontend` (React) and a `backend` (Flask) directory. You will need to install dependencies for both.
 
 1.  **Clone the Repository**
     ```sh
@@ -48,7 +51,7 @@ You will need the following software installed on your system:
     cd EasySeg
     ```
 
-2.  **Set up the Backend**
+2.  **Set up the Backend (Flask)**
 
     a. Navigate to the backend directory and create a virtual environment:
     ```sh
@@ -59,60 +62,60 @@ You will need the following software installed on your system:
     -   On Windows: `venv\Scripts\activate`
     -   On macOS/Linux: `source venv/bin/activate`
 
-    b. Install the required Python packages. This includes Flask, PyTorch, and the SAM model library.
+    b. Install the required Python packages from `requirements.txt`:
     ```sh
     pip install -r requirements.txt
     ```
-    > **Note:** A typical `requirements.txt` for this project would look like this:
-    > ```
-    > flask
-    > flask-cors
-    > torch
-    > torchvision
-    > git+https://github.com/facebookresearch/segment-anything.git
-    > opencv-python
-    > numpy
-    > rasterio
-    > gdal
-    > shapely
-    > ```
 
-    c. **Download the SAM Model Checkpoint:** The SAM model requires a pre-trained model file (a "checkpoint"). Download one of the official checkpoints from the [SAM repository](https://github.com/facebookresearch/segment-anything#model-checkpoints). The `vit_h` is the largest and most accurate, while `vit_b` is the smallest and fastest.
+    c. **Download the SAM Model Checkpoint:** The SAM model requires a pre-trained model file. Download one of the official checkpoints from the [SAM repository](https://github.com/facebookresearch/segment-anything#model-checkpoints). We recommend `vit_b.pth` for a balance of speed and performance.
 
     **Place the downloaded `.pth` file inside the `backend/models/` directory.** (You may need to create the `models` folder).
 
-3.  **Frontend Setup**
-    The frontend is a simple `index.html` file located in the `frontend/` directory. It requires **no installation or build steps**.
+3.  **Set up the Frontend (React)**
+
+    a. In a new terminal, navigate to the frontend directory:
+    ```sh
+    cd frontend  # from the root EasySeg directory
+    ```
+
+    b. Install the Node.js dependencies:
+    ```sh
+    npm install
+    ```
 
 ## How to Run the Application
 
-1.  **Start the Backend Server**
-    Make sure you are in the `backend/` directory with your virtual environment activated. Run the Flask application:
+You need to run the backend and frontend servers simultaneously in two separate terminals.
+
+1.  **Start the Backend Server (Terminal 1)**
+    -   Navigate to the `backend/` directory.
+    -   Make sure your Python virtual environment is activated (`source venv/bin/activate` or `venv\Scripts\activate`).
+    -   Run the Flask application:
     ```sh
     python app.py
     ```
-    You should see output indicating that the server is running, typically on `http://127.0.0.1:5000`.
+    The backend server will start, typically on `http://127.0.0.1:5000`.
 
-2.  **Launch the Frontend**
-    Navigate to the `frontend/` directory and open the `index.html` file directly in your web browser (e.g., Chrome, Firefox).
-    -   You can simply double-click the file.
-    -   Or right-click -> "Open with" -> Your Browser.
+2.  **Start the Frontend Server (Terminal 2)**
+    -   Navigate to the `frontend/` directory.
+    -   Run the React development server:
+    ```sh
+    npm start
+    ```
+    This will automatically open the EasySeg application in your default web browser, usually at `http://localhost:3000`. The React app is configured to communicate with the backend server running on port 5000.
 
 ## How It Works (Methodology)
 
 The user workflow follows four simple steps:
 
-1.  **Import WMS Image:** The frontend loads a map view with an imagery layer from the configured WMS service (e.g., Bhuvan). The map view allows panning and zooming.
-2.  **Perform Segmentation:** The user interacts with the map by clicking on an object of interest. The coordinates of this click are sent to the Flask backend along with the current map view's bounding box.
-    -   The backend fetches a high-resolution image of that bounding box from the WMS service.
-    -   It loads the SAM model and performs segmentation using the user's click as an input prompt.
-    -   The resulting binary mask is returned to the frontend.
-3.  **Visualize and Refine:** The frontend overlays the received mask on the map, showing the user the segmented feature. The user can continue selecting other features.
-4.  **Export to GeoJSON:** Once the user is satisfied, they can click an "Export" button. The backend takes all the generated masks, converts them from raster to vector polygons, georeferences them correctly, and serves them as a single GeoJSON file for the user to download.
+1.  **Import WMS Image:** The React frontend loads an interactive map (e.g., using Leaflet or OpenLayers) with an imagery layer from the configured WMS service.
+2.  **Perform Segmentation:** The user interacts with the map by clicking on an object. The coordinates and current map bounds are sent to the Flask backend. The backend fetches the corresponding image, runs the SAM model, and returns the resulting mask.
+3.  **Visualize and Refine:** The React frontend receives the mask and overlays it on the map. The user can continue selecting features.
+4.  **Export to GeoJSON:** The user clicks an "Export" button. The backend processes all generated masks, converts them to georeferenced vector polygons, and provides a single GeoJSON file for download.
 
 ## Conclusion
 
-EasySeg successfully demonstrates the integration of a state-of-the-art AI model with standard geospatial services. It provides a powerful, easy-to-use tool for interactive feature extraction, proving that complex on-device computation is viable within a web-based GIS framework.
+EasySeg successfully demonstrates the integration of a state-of-the-art AI model with standard geospatial services in a modern web stack. It provides a powerful, easy-to-use tool for interactive feature extraction, proving that complex on-device computation is viable within a web-based GIS framework.
 
 ### Acknowledgments
 *   **Meta AI** for the groundbreaking [Segment Anything Model](https://ai.facebook.com/blog/segment-anything-project/).
